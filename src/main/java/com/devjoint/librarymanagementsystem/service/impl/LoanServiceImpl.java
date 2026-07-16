@@ -13,6 +13,10 @@ import com.devjoint.librarymanagementsystem.service.LoanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 
@@ -64,24 +68,42 @@ public class LoanServiceImpl implements LoanService {
             String sortBy,
             String sortDirection) {
 
-        throw new UnsupportedOperationException(
-                "This method will be implemented in Checkpoint 3."
-        );
+        Sort sort = sortDirection.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return loanRepository.findAll(pageable)
+                .map(loanMapper::toResponse);
     }
 
     @Override
     public LoanResponseDto updateLoan(Long id, LoanRequestDto requestDto) {
 
-        throw new UnsupportedOperationException(
-                "This method will be implemented in Checkpoint 3."
-        );
+        Loan loan = loanRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+        Book book = bookRepository.findById(requestDto.getBookId())
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        Member member = memberRepository.findById(requestDto.getMemberId())
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        loan.setBook(book);
+        loan.setMember(member);
+
+        Loan updatedLoan = loanRepository.save(loan);
+
+        return loanMapper.toResponse(updatedLoan);
     }
 
     @Override
     public void deleteLoan(Long id) {
 
-        throw new UnsupportedOperationException(
-                "This method will be implemented in Checkpoint 3."
-        );
+        Loan loan = loanRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+        loanRepository.delete(loan);
     }
 }

@@ -7,7 +7,7 @@ import com.devjoint.librarymanagementsystem.mapper.MemberMapper;
 import com.devjoint.librarymanagementsystem.repository.MemberRepository;
 import com.devjoint.librarymanagementsystem.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponseDto getMemberById(Long id) {
 
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
 
         return memberMapper.toResponse(member);
     }
@@ -43,24 +43,38 @@ public class MemberServiceImpl implements MemberService {
             String sortBy,
             String sortDirection) {
 
-        throw new UnsupportedOperationException(
-                "This method will be implemented in Checkpoint 3."
-        );
+        Sort sort = sortDirection.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return memberRepository.findAll(pageable)
+                .map(memberMapper::toResponse);
     }
 
     @Override
     public MemberResponseDto updateMember(Long id, MemberRequestDto requestDto) {
 
-        throw new UnsupportedOperationException(
-                "This method will be implemented in Checkpoint 3."
-        );
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+
+        member.setFirstName(requestDto.getFirstName());
+        member.setLastName(requestDto.getLastName());
+        member.setEmail(requestDto.getEmail());
+        member.setPhoneNumber(requestDto.getPhoneNumber());
+
+        Member updatedMember = memberRepository.save(member);
+
+        return memberMapper.toResponse(updatedMember);
     }
 
     @Override
     public void deleteMember(Long id) {
 
-        throw new UnsupportedOperationException(
-                "This method will be implemented in Checkpoint 3."
-        );
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+
+        memberRepository.delete(member);
     }
 }

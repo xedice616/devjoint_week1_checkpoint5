@@ -5,6 +5,7 @@ import com.devjoint.librarymanagementsystem.dto.response.BookResponseDto;
 import com.devjoint.librarymanagementsystem.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,4 +31,29 @@ public class BookController {
         return bookService.getBookById(id);
     }
 
+    @GetMapping
+    public Page<BookResponseDto> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+
+        return bookService.getAllBooks(page, size, sortBy, sortDirection);
+    }
+
+    @PutMapping("/{id}")
+    public BookResponseDto updateBook(
+            @PathVariable Long id,
+            @Valid @RequestBody BookRequestDto requestDto) {
+
+        return bookService.updateBook(id, requestDto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBook(
+            @PathVariable Long id) {
+
+        bookService.deleteBook(id);
+    }
 }

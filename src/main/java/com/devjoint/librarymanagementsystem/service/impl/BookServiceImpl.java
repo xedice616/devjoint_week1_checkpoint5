@@ -9,7 +9,7 @@ import com.devjoint.librarymanagementsystem.repository.AuthorRepository;
 import com.devjoint.librarymanagementsystem.repository.BookRepository;
 import com.devjoint.librarymanagementsystem.service.BookService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +24,8 @@ public class BookServiceImpl implements BookService {
     public BookResponseDto createBook(BookRequestDto requestDto) {
 
         Author author = authorRepository.findById(requestDto.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Author not found with id: " + requestDto.getAuthorId()));
 
         Book book = bookMapper.toEntity(requestDto);
 
@@ -39,7 +40,8 @@ public class BookServiceImpl implements BookService {
     public BookResponseDto getBookById(Long id) {
 
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Book not found with id: " + id));
 
         return bookMapper.toResponse(book);
     }
@@ -51,24 +53,44 @@ public class BookServiceImpl implements BookService {
             String sortBy,
             String sortDirection) {
 
-        throw new UnsupportedOperationException(
-                "This method will be implemented in Checkpoint 3."
-        );
+        Sort sort = sortDirection.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return bookRepository.findAll(pageable)
+                .map(bookMapper::toResponse);
     }
 
     @Override
     public BookResponseDto updateBook(Long id, BookRequestDto requestDto) {
 
-        throw new UnsupportedOperationException(
-                "This method will be implemented in Checkpoint 3."
-        );
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Book not found with id: " + id));
+
+        Author author = authorRepository.findById(requestDto.getAuthorId())
+                .orElseThrow(() ->
+                        new RuntimeException("Author not found with id: " + requestDto.getAuthorId()));
+
+        book.setTitle(requestDto.getTitle());
+        book.setIsbn(requestDto.getIsbn());
+        book.setPublicationYear(requestDto.getPublicationYear());
+        book.setAuthor(author);
+
+        Book updatedBook = bookRepository.save(book);
+
+        return bookMapper.toResponse(updatedBook);
     }
 
     @Override
     public void deleteBook(Long id) {
 
-        throw new UnsupportedOperationException(
-                "This method will be implemented in Checkpoint 3."
-        );
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Book not found with id: " + id));
+
+        bookRepository.delete(book);
     }
 }
