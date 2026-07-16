@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:7878/library_management_db
     username: postgres
-    password: password
+    password: xedice2008
 
   jpa:
     hibernate:
