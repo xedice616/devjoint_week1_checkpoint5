@@ -14,16 +14,13 @@ A RESTful Library Management System built with Spring Boot.
 
 ## Features
 
-- Author Management (CRUD)
-- Book Management (CRUD)
-- Member Management (CRUD)
-- Loan Management (CRUD)
-- Pagination and Sorting
+- CRUD APIs for Authors, Books, Members and Loans
+- Layered Architecture (Controller → Service → Repository)
 - DTO Mapping with MapStruct
 - Input Validation
 - Global Exception Handling
-- Swagger API Documentation
-
+- Pagination
+- Sorting
 ## Validation
 
 The project uses Jakarta Validation annotations such as:
@@ -33,6 +30,12 @@ The project uses Jakarta Validation annotations such as:
 - @Email
 - @Size
 - @Min
+
+
+### Pagination Example
+
+GET /api/authors?page=0&size=5&sortBy=id&sortDirection=asc
+
 
 ## Exception Handling
 
