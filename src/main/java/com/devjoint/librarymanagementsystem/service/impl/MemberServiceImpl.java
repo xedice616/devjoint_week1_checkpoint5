@@ -3,6 +3,7 @@ package com.devjoint.librarymanagementsystem.service.impl;
 import com.devjoint.librarymanagementsystem.dto.request.MemberRequestDto;
 import com.devjoint.librarymanagementsystem.dto.response.MemberResponseDto;
 import com.devjoint.librarymanagementsystem.entity.Member;
+import com.devjoint.librarymanagementsystem.exception.ResourceNotFoundException;
 import com.devjoint.librarymanagementsystem.mapper.MemberMapper;
 import com.devjoint.librarymanagementsystem.repository.MemberRepository;
 import com.devjoint.librarymanagementsystem.service.MemberService;
@@ -31,7 +32,8 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponseDto getMemberById(Long id) {
 
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Member not found with id: " + id));
 
         return memberMapper.toResponse(member);
     }
@@ -57,7 +59,8 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponseDto updateMember(Long id, MemberRequestDto requestDto) {
 
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Member not found with id: " + id));
 
         member.setFirstName(requestDto.getFirstName());
         member.setLastName(requestDto.getLastName());
@@ -73,7 +76,8 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMember(Long id) {
 
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Member not found with id: " + id));
 
         memberRepository.delete(member);
     }

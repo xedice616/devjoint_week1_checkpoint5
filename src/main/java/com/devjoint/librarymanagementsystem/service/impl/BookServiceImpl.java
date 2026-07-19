@@ -4,6 +4,7 @@ import com.devjoint.librarymanagementsystem.dto.request.BookRequestDto;
 import com.devjoint.librarymanagementsystem.dto.response.BookResponseDto;
 import com.devjoint.librarymanagementsystem.entity.Author;
 import com.devjoint.librarymanagementsystem.entity.Book;
+import com.devjoint.librarymanagementsystem.exception.ResourceNotFoundException;
 import com.devjoint.librarymanagementsystem.mapper.BookMapper;
 import com.devjoint.librarymanagementsystem.repository.AuthorRepository;
 import com.devjoint.librarymanagementsystem.repository.BookRepository;
@@ -25,7 +26,8 @@ public class BookServiceImpl implements BookService {
 
         Author author = authorRepository.findById(requestDto.getAuthorId())
                 .orElseThrow(() ->
-                        new RuntimeException("Author not found with id: " + requestDto.getAuthorId()));
+                        new ResourceNotFoundException(
+                                "Author not found with id: " + requestDto.getAuthorId()));
 
         Book book = bookMapper.toEntity(requestDto);
 
@@ -41,7 +43,7 @@ public class BookServiceImpl implements BookService {
 
         Book book = bookRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Book not found with id: " + id));
+                        new ResourceNotFoundException("Book not found with id: " + id));
 
         return bookMapper.toResponse(book);
     }
@@ -68,11 +70,12 @@ public class BookServiceImpl implements BookService {
 
         Book book = bookRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Book not found with id: " + id));
+                        new ResourceNotFoundException("Book not found with id: " + id));
 
         Author author = authorRepository.findById(requestDto.getAuthorId())
                 .orElseThrow(() ->
-                        new RuntimeException("Author not found with id: " + requestDto.getAuthorId()));
+                        new ResourceNotFoundException(
+                                "Author not found with id: " + requestDto.getAuthorId()));
 
         book.setTitle(requestDto.getTitle());
         book.setIsbn(requestDto.getIsbn());
@@ -89,7 +92,7 @@ public class BookServiceImpl implements BookService {
 
         Book book = bookRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Book not found with id: " + id));
+                        new ResourceNotFoundException("Book not found with id: " + id));
 
         bookRepository.delete(book);
     }

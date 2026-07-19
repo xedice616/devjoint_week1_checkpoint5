@@ -3,6 +3,7 @@ package com.devjoint.librarymanagementsystem.service.impl;
 import com.devjoint.librarymanagementsystem.dto.request.AuthorRequestDto;
 import com.devjoint.librarymanagementsystem.dto.response.AuthorResponseDto;
 import com.devjoint.librarymanagementsystem.entity.Author;
+import com.devjoint.librarymanagementsystem.exception.ResourceNotFoundException;
 import com.devjoint.librarymanagementsystem.mapper.AuthorMapper;
 import com.devjoint.librarymanagementsystem.repository.AuthorRepository;
 import com.devjoint.librarymanagementsystem.service.AuthorService;
@@ -31,7 +32,8 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorResponseDto getAuthorById(Long id) {
 
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Author not found with id: " + id));
 
         return authorMapper.toResponse(author);
     }
@@ -57,7 +59,8 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorResponseDto updateAuthor(Long id, AuthorRequestDto requestDto) {
 
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Author not found with id: " + id));
 
         author.setFirstName(requestDto.getFirstName());
         author.setLastName(requestDto.getLastName());
@@ -72,7 +75,8 @@ public class AuthorServiceImpl implements AuthorService {
     public void deleteAuthor(Long id) {
 
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found with id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Author not found with id: " + id));
 
         authorRepository.delete(author);
     }

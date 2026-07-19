@@ -5,6 +5,7 @@ import com.devjoint.librarymanagementsystem.dto.response.LoanResponseDto;
 import com.devjoint.librarymanagementsystem.entity.Book;
 import com.devjoint.librarymanagementsystem.entity.Loan;
 import com.devjoint.librarymanagementsystem.entity.Member;
+import com.devjoint.librarymanagementsystem.exception.ResourceNotFoundException;
 import com.devjoint.librarymanagementsystem.mapper.LoanMapper;
 import com.devjoint.librarymanagementsystem.repository.BookRepository;
 import com.devjoint.librarymanagementsystem.repository.LoanRepository;
@@ -12,11 +13,10 @@ import com.devjoint.librarymanagementsystem.repository.MemberRepository;
 import com.devjoint.librarymanagementsystem.service.LoanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
@@ -33,10 +33,14 @@ public class LoanServiceImpl implements LoanService {
     public LoanResponseDto createLoan(LoanRequestDto requestDto) {
 
         Book book = bookRepository.findById(requestDto.getBookId())
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Book not found with id: " + requestDto.getBookId()));
 
         Member member = memberRepository.findById(requestDto.getMemberId())
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Member not found with id: " + requestDto.getMemberId()));
 
         Loan loan = loanMapper.toEntity(requestDto);
 
@@ -56,7 +60,9 @@ public class LoanServiceImpl implements LoanService {
     public LoanResponseDto getLoanById(Long id) {
 
         Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Loan not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Loan not found with id: " + id));
 
         return loanMapper.toResponse(loan);
     }
@@ -82,13 +88,19 @@ public class LoanServiceImpl implements LoanService {
     public LoanResponseDto updateLoan(Long id, LoanRequestDto requestDto) {
 
         Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Loan not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Loan not found with id: " + id));
 
         Book book = bookRepository.findById(requestDto.getBookId())
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Book not found with id: " + requestDto.getBookId()));
 
         Member member = memberRepository.findById(requestDto.getMemberId())
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Member not found with id: " + requestDto.getMemberId()));
 
         loan.setBook(book);
         loan.setMember(member);
@@ -102,7 +114,9 @@ public class LoanServiceImpl implements LoanService {
     public void deleteLoan(Long id) {
 
         Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Loan not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Loan not found with id: " + id));
 
         loanRepository.delete(loan);
     }
