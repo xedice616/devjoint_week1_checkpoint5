@@ -18,23 +18,36 @@ public class MemberController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MemberResponseDto createMember(@Valid @RequestBody MemberRequestDto requestDto) {
+    public MemberResponseDto createMember(
+            @Valid @RequestBody MemberRequestDto requestDto) {
+
         return memberService.createMember(requestDto);
     }
 
     @GetMapping("/{id}")
-    public MemberResponseDto getMemberById(@PathVariable Long id) {
+    public MemberResponseDto getMemberById(
+            @PathVariable Long id) {
+
         return memberService.getMemberById(id);
     }
 
     @GetMapping
     public Page<MemberResponseDto> getAllMembers(
+
             @RequestParam(defaultValue = "0") int page,
+
             @RequestParam(defaultValue = "5") int size,
+
             @RequestParam(defaultValue = "id") String sortBy,
+
             @RequestParam(defaultValue = "asc") String sortDirection) {
 
-        return memberService.getAllMembers(page, size, sortBy, sortDirection);
+        return memberService.getAllMembers(
+                page,
+                size,
+                sortBy,
+                sortDirection
+        );
     }
 
     @PutMapping("/{id}")
@@ -47,7 +60,9 @@ public class MemberController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMember(@PathVariable Long id) {
+    public void deleteMember(
+            @PathVariable Long id) {
+
         memberService.deleteMember(id);
     }
 }

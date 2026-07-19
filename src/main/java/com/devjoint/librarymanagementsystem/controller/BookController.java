@@ -33,12 +33,21 @@ public class BookController {
 
     @GetMapping
     public Page<BookResponseDto> getAllBooks(
+
             @RequestParam(defaultValue = "0") int page,
+
             @RequestParam(defaultValue = "5") int size,
+
             @RequestParam(defaultValue = "id") String sortBy,
+
             @RequestParam(defaultValue = "asc") String sortDirection) {
 
-        return bookService.getAllBooks(page, size, sortBy, sortDirection);
+        return bookService.getAllBooks(
+                page,
+                size,
+                sortBy,
+                sortDirection
+        );
     }
 
     @PutMapping("/{id}")
